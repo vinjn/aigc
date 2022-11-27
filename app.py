@@ -1,8 +1,8 @@
 from diffusers import StableDiffusionPipeline, EulerDiscreteScheduler
 import torch
 
-W = 512
-H = 512
+W = 768
+H = 768
 model_id = "stabilityai/stable-diffusion-2"
 
 # Use the Euler scheduler here instead
@@ -10,10 +10,10 @@ scheduler = EulerDiscreteScheduler.from_pretrained(model_id, subfolder="schedule
 pipe = StableDiffusionPipeline.from_pretrained(model_id, scheduler=scheduler, revision="fp16", torch_dtype=torch.float16)
 pipe = pipe.to("cuda")
 
-# pipe.enable_attention_slicing()
-prompt = "girl wearing cyberpunk intricate streetwear riding dirt bike, beautiful, detailed portrait, cell shaded, 4 k, concept art, by wlop, ilya kuvshinov, artgerm, krenz cushart, greg rutkowski, pixiv. cinematic dramatic atmosphere, sharp focus, volumetric lighting, cinematic lighting, studio quality"
-filename = prompt.replace(',', '-').replace(' ', '_')[:200] + '.png'
+pipe.enable_attention_slicing()
+prompt = "tesla painted by Alphonse Mucha, natural lighting, path traced, highly detailed, high quality, digital painting, by don bluth and ross tran and studio ghibli and alphonse mucha, artgerm "
+filename = prompt.replace(',', '-').replace(':','').replace(' ', '_')[:200] + '.png'
 
 images = pipe(prompt, height=W, width=H).images
-    
+
 images[0].save(filename)
